@@ -60,7 +60,7 @@ int main()
             return 3;
         }
 
-        execl("daughter", "daughter", NULL);
+        execl("child", "child", NULL);
         perror("execl() failed");
         return 4;
     }
