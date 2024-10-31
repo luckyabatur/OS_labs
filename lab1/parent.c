@@ -1,6 +1,6 @@
 #include "stdio.h"
-#include "stdlib.h" // pid_t declaration is here
-#include "unistd.h" // fork() and getpid() declarations are here
+#include "stdlib.h"
+#include "unistd.h"
 #include <fcntl.h>
 #include "sys/wait.h"
 
