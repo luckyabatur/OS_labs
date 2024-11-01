@@ -43,7 +43,7 @@ int main()
 
         if (dup2(d, STDIN_FILENO) == -1)
         {
-            close(d), close(pipe1[0]), close(pipe1[1]);
+            close(d), close(pipe1[1]);
             perror("dup2 failed");
             return 3;
         }
@@ -52,13 +52,13 @@ int main()
 
         if (dup2(pipe1[1], STDOUT_FILENO) == -1)
         {
-            close(pipe1[0]), close(pipe1[1]);
+            close(pipe1[1]);
             perror("dup2 failed");
             return 3;
         }
 
         execl("child", "child", NULL);
-        close(pipe1[0]), close(pipe1[1]);
+        close(pipe1[0]);
         perror("execl() failed");
         return 4;
     }
@@ -73,13 +73,6 @@ int main()
 
         while ((status = read(pipe1[0], &symbol, sizeof(symbol))) > 0)
         {
-            if (status == -1)
-            {
-                close(pipe1[0]);
-                perror("read failed");
-                break;
-            }
-
             if (symbol == '\n')
             {
                 number[i] = 0;
@@ -91,6 +84,14 @@ int main()
                 number[i++] = symbol;
             }
         }
+
+        if (status == -1)
+        {
+            close(pipe1[0]);
+            perror("read failed");
+            break;
+        }
+
         close(pipe1[0]);
         wait(NULL);
     }
