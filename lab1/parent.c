@@ -33,7 +33,7 @@ int main()
     {
         close(d), close(pipe1[0]), close(pipe1[1]);
         perror("fork");
-        exit(-1);
+        return 6;
     }
 
 
