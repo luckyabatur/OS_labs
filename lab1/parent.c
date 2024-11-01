@@ -89,7 +89,7 @@ int main()
         {
             close(pipe1[0]);
             perror("read failed");
-            break;
+            return 5;
         }
 
         close(pipe1[0]);
