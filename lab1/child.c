@@ -3,7 +3,7 @@
 #include "unistd.h"
 #include <string.h>
 #include <stdbool.h>
-
+#define MAX_SIZE 1000
 
 bool prime(int n)
 {
@@ -15,7 +15,7 @@ bool prime(int n)
 
 int main()
 {
-    char number[1000];
+    char number[MAX_SIZE];
     char symbol;
     int i = 0;
     while ((read(STDIN_FILENO, &symbol, sizeof(symbol))) > 0)
