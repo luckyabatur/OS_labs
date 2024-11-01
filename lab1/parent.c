@@ -58,7 +58,7 @@ int main()
         }
 
         execl("child", "child", NULL);
-        close(pipe1[0]);
+        close(pipe1[1]);
         perror("execl() failed");
         return 4;
     }
@@ -87,10 +87,7 @@ int main()
 
         if (status == -1)
         {
-            close(pipe1[0]);
             perror("read failed");
-            wait(NULL);
-            return 5;
         }
 
         close(pipe1[0]);
