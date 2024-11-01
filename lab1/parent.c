@@ -5,19 +5,6 @@
 #include "sys/wait.h"
 
 
-
-int create_process()
-{
-    pid_t pid = fork();
-    if (-1 == pid)
-    {
-        perror("fork");
-        exit(-1);
-    }
-    return pid;
-}
-
-
 int main()
 {
 
@@ -40,7 +27,15 @@ int main()
         return 2;
     }
 
-    pid_t pid = create_process();
+    pid_t pid = fork();
+
+    if (-1 == pid)
+    {
+        close(d), close(pipe1[0]), close(pipe1[1]);
+        perror("fork");
+        exit(-1);
+    }
+
 
     if (pid == 0)
     {
@@ -48,6 +43,7 @@ int main()
 
         if (dup2(d, STDIN_FILENO) == -1)
         {
+            close(d), close(pipe1[0]), close(pipe1[1]);
             perror("dup2 failed");
             return 3;
         }
@@ -56,11 +52,13 @@ int main()
 
         if (dup2(pipe1[1], STDOUT_FILENO) == -1)
         {
+            close(pipe1[0]), close(pipe1[1]);
             perror("dup2 failed");
             return 3;
         }
 
         execl("child", "child", NULL);
+        close(pipe1[0]), close(pipe1[1]);
         perror("execl() failed");
         return 4;
     }
@@ -77,6 +75,7 @@ int main()
         {
             if (status == -1)
             {
+                close(pipe1[0]);
                 perror("read failed");
                 break;
             }
