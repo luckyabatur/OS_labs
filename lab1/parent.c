@@ -3,6 +3,7 @@
 #include "unistd.h"
 #include <fcntl.h>
 #include "sys/wait.h"
+#include <string.h>
 
 
 int main()
@@ -76,7 +77,8 @@ int main()
             if (symbol == '\n')
             {
                 number[i] = 0;
-                puts(number);
+                write(STDOUT_FILENO, number, strlen(number));
+                write(STDOUT_FILENO, "\n", 1);
                 i = 0;
             }
             else
