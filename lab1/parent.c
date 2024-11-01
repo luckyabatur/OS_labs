@@ -85,13 +85,15 @@ int main()
             }
         }
 
-        if (status == -1)
-        {
-            perror("read failed");
-        }
 
         close(pipe1[0]);
         wait(NULL);
+
+        if (status == -1)
+        {
+            perror("read failed");
+            return 5;
+        }
     }
     return 0;
 }
