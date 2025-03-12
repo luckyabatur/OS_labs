@@ -17,14 +17,14 @@ int main()
     sem_t *sem = sem_open("/mysem", O_CREAT | O_EXCL, 0666, 0);
     if (sem == SEM_FAILED)
     {
-        perror("sem_open failed");
+        perror("sem_open failed: ");
         return 1;
     }
 
     int temp_fd = open("temp", O_RDWR | O_CREAT | O_TRUNC, 0666);
     if (temp_fd == -1)
     {
-        perror("open failed");
+        perror("open failed: ");
         sem_close(sem);
         sem_unlink("/mysem");
         return 2;
@@ -32,7 +32,7 @@ int main()
 
     if (ftruncate(temp_fd, PAGE_SIZE) == -1)
     {
-        perror("ftruncate failed");
+        perror("ftruncate failed: ");
         close(temp_fd);
         sem_close(sem);
         sem_unlink("/mysem");
@@ -43,7 +43,7 @@ int main()
     char* shared_mem = mmap(0, PAGE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, temp_fd, 0);
     if (shared_mem == MAP_FAILED)
     {
-        perror("mmap failed");
+        perror("mmap failed: ");
         close(temp_fd);
         sem_close(sem);
         sem_unlink("/mysem");
@@ -57,7 +57,7 @@ int main()
     int fd = open(name, O_RDONLY);
     if (fd == -1)
     {
-        perror("open failed");
+        perror("open failed: ");
         munmap(shared_mem, PAGE_SIZE);
         close(temp_fd);
         sem_close(sem);
@@ -83,7 +83,7 @@ int main()
     {
         if (dup2(fd, STDIN_FILENO) == -1)
         {
-            perror("dup2 failed");
+            perror("dup2 failed: ");
             close(fd);
             munmap(shared_mem, PAGE_SIZE);
             close(temp_fd);
@@ -96,7 +96,7 @@ int main()
 
         execl("child", "child", NULL);
 
-        perror("execl() failed");
+        perror("execl() failed: ");
         munmap(shared_mem, PAGE_SIZE);
         close(temp_fd);
         sem_close(sem);
@@ -123,19 +123,20 @@ int main()
 
         if (waitpid(pid, &status, 0) == -1)
         {
-            perror("Ошибка waitpid");
+            perror("Ошибка waitpid: ");
             return 9;
         }
 
-        if (WIFEXITED(status)) {
+        if (WIFEXITED(status))
+        {
             int child_code = WEXITSTATUS(status);
 
             if (child_code == 1)
-                perror("open child failed");
+                printf("open child failed");
             else if (child_code == 2)
-                perror("mmap child failed");
+                printf("mmap child failed");
             else if (child_code == 3)
-                perror("sem_open child failed");
+                printf("sem_open child failed");
         }
 
         munmap(shared_mem, PAGE_SIZE);

@@ -13,7 +13,7 @@
 bool prime(int n)
 {
     if (n <= 0)
-        return false;
+        return true;
     for(int i = 2; i * i <= n; i++)
         if(n % i == 0)
             return false;
@@ -23,13 +23,16 @@ bool prime(int n)
 int main()
 {
     int fd = open("temp", O_RDWR);
-    if (fd == -1) {
+    if (fd == -1)
+    {
+        perror("open child failed: ");
         return 1;
     }
 
     char* shared_mem = mmap(NULL, PAGE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (shared_mem == MAP_FAILED)
     {
+        perror("mmap child failed: ");
         close(fd);
         return 2;
     }
@@ -37,6 +40,7 @@ int main()
     sem_t *sem = sem_open("/mysem", 0);
     if (sem == SEM_FAILED)
     {
+        perror("sem_open child failed: ");
         munmap(shared_mem, PAGE_SIZE);
         close(fd);
         return 3;
@@ -48,13 +52,14 @@ int main()
     int i = 0, j = 0, k = 0, length = 0;
 
     length = read(STDIN_FILENO, numbers_string, STRING_MAX_SIZE);
-    if (length <= 0)
+    if (length == -1)
     {
+        perror("sem_open read failed: ");
         sem_post(sem);
         sem_close(sem);
         munmap(shared_mem, PAGE_SIZE);
         close(fd);
-        return 0;
+        return 4;
     }
 
     for (; j < length; j++)
