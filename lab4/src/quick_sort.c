@@ -47,7 +47,7 @@ extern "C"
 #endif
 int* Sort(int *array)
 {
-    quickSort(array, 0, ARRAY_SIZE);
+    quickSort(array, 0, ARRAY_SIZE-1);
     return array;
 }
 

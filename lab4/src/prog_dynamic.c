@@ -50,15 +50,16 @@ int main() {
                "2 (int) el1 (int) el2... (int) el10 - sort the array with elements el1...el10\n"
                "other value - exit\n");
         int choose;
-        scanf("%d", &choose);
+
+        if (scanf("%d", &choose) != 1)
+            return 0;
 
         switch (choose)
         {
             case 0:
             {
-
                 char path[LIB_PATH_SIZE];
-                scanf("%s29", path);
+                scanf("%29s", path);
                 choose_library(path);
                 break;
             }
