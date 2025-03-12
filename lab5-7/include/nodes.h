@@ -23,11 +23,6 @@ public:
     Node(Node&& other) noexcept;
     Node& operator=(Node&& other) noexcept;
 
-//    bool operator==(const Node& other) const
-//    {
-//        return id == other.id && pid == other.pid;
-//    }
-
     int id{-1};
     pid_t pid{-1};
     void* context{nullptr};
