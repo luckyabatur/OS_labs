@@ -7,8 +7,6 @@
 #include <semaphore.h>
 
 #define PAGE_SIZE 4096
-#define STRING_MAX_SIZE 10000
-#define NUMBER_MAX_SIZE 15
 
 bool prime(int n)
 {
