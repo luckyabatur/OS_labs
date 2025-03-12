@@ -9,6 +9,7 @@
 #include <semaphore.h>
 
 #define PAGE_SIZE 4096
+#define STRING_LENGTH 100
 
 int main()
 {
